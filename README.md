@@ -1,2 +1,2 @@
-# Pusho
+# Pusho/settings/pages
 Tracker
