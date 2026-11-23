@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Отжимания</title>
+<meta name="theme-color" content="#2b1055">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=JetBrains+Mono:wght@500;800&family=Lobster&family=Montserrat:wght@500;800&family=Oswald:wght@500;700&family=Pacifico&family=Playfair+Display:wght@600;800&family=Press+Start+2P&family=Russo+One&display=swap" rel="stylesheet">
+<style>
+:root{--a:#ffd166;--ab:#000;--t:#fff7ed;--card:rgba(255,255,255,.1);--r:22px;--f:system-ui,sans-serif;--fs:1}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{font-size:calc(16px*var(--fs))}
+body{margin:0;color:var(--t);font-family:var(--f);min-height:100vh;padding-top:env(safe-area-inset-top)}
+#bg{position:fixed;inset:0;z-index:-1;background-size:cover;background-position:center}
+main{max-width:480px;margin:0 auto;padding:14px 16px calc(92px + env(safe-area-inset-bottom))}
+.scr{display:none}.scr.on{display:block}
+.card{background:var(--card);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border:1px solid rgba(128,128,128,.22);border-radius:var(--r);padding:16px;margin-bottom:12px}
+small{opacity:.7;display:block;margin-bottom:6px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.row .card{margin:0 0 12px}
+.big{font-size:2.5rem;line-height:1;display:inline-block}
+.b{animation:bump .3s}@keyframes bump{50%{transform:scale(1.25)}}
+.who{display:flex;align-items:center;gap:10px;font-size:1.4rem;margin:4px 2px 14px}
+.who span{font-size:2rem}
+#add{display:block;margin:10px auto 22px;width:min(66vw,250px);aspect-ratio:1;border-radius:50%;border:0;background:var(--a);color:var(--ab);font:inherit;font-size:clamp(2.2rem,12vw,3.4rem);box-shadow:0 0 0 10px color-mix(in srgb,var(--a) 22%,transparent),0 18px 50px color-mix(in srgb,var(--a) 50%,transparent);transition:transform .08s}
+#add:active{transform:scale(.93)}
+.fl{position:fixed;pointer-events:none;font-size:1.8rem;color:var(--a);animation:up .8s forwards}
+@keyframes up{to{transform:translateY(-120px);opacity:0}}
+.r2{display:flex;gap:12px;align-items:center}
+.r2 input{flex:1}
+input[type=range]{accent-color:var(--a);width:100%}
+input[type=color]{width:100%;height:38px;border:0;border-radius:10px;background:none;padding:0}
+#name{width:100%;font:inherit;font-size:1.4rem;text-align:center;color:inherit;background:none;border:0;border-bottom:2px solid var(--a);outline:0;margin:6px 0}
+button,.chip{font:inherit;color:inherit}
+.sm{width:42px;height:42px;border-radius:50%;border:0;background:var(--a);color:var(--ab);font-size:1.4rem}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.chip{padding:8px 14px;border-radius:999px;border:1.5px solid rgba(128,128,128,.4);background:none;font-size:.95rem;cursor:pointer}
+.chip.on{background:var(--a);color:var(--ab);border-color:var(--a)}
+.ghost{display:block;width:100%;background:none;border:1.5px dashed rgba(128,128,128,.5);border-radius:var(--r);padding:12px;margin-bottom:12px}
+label{display:block;margin-top:12px;font-size:.9rem}
+.cols{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.cols label{margin:0}
+.tc{text-align:center}.av{font-size:4rem;line-height:1}
+.grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px 8px;text-align:center}
+.grid b{font-size:1.5rem;display:block}.grid small{font-size:.75rem;margin:0}
+#week{display:flex;gap:6px;align-items:flex-end;height:120px}
+.bar{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:4px;font-size:.75rem}
+.bar i{width:100%;background:var(--a);border-radius:8px}
+nav{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:center;gap:8px;padding:10px 16px calc(10px + env(safe-area-inset-bottom));background:var(--card);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px)}
+nav button{flex:1;max-width:150px;border:0;background:none;padding:8px;border-radius:999px;font-size:.95rem}
+nav button.on{background:var(--a);color:var(--ab)}
+#toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:#000c;color:#fff;padding:10px 16px;border-radius:999px;font-size:.9rem;opacity:0;pointer-events:none;transition:.2s;max-width:90vw;text-align:center}
+#toast.on{opacity:1}
+</style>
+</head>
+<body>
+<div id="bg"></div>
+<main>
+<section class="scr on" id="home">
+ <div class="who"><span id="hAv"></span><b id="hName"></b></div>
+ <div class="row"><div class="card"><small>Сегодня</small><div class="big" id="today">0</div></div><div class="card"><small>За всё время</small><div class="big" id="total">0</div></div></div>
+ <button id="add"></button>
+ <div class="card">
+  <small>Сколько отжиманий за подход</small>
+  <div class="r2"><button class="sm" id="m">−</button><input type="range" id="step" min="1" max="100"><button class="sm" id="p">+</button></div>
+  <div class="chips" id="quick"></div>
+ </div>
+ <button class="ghost" id="undo">↩ Отменить последний подход</button>
+ <div class="card"><small>Подходы сегодня</small><div class="chips" id="sets"></div></div>
+</section>
+
+<section class="scr" id="prof">
+ <div class="card tc"><div class="av" id="pAv"></div><input id="name" maxlength="20" placeholder="Никнейм"><div id="rank"></div><div class="big" id="pTot">0</div><small>отжиманий всего</small></div>
+ <div class="card"><small>Аватар</small><div class="chips" id="avs"></div></div>
+ <div class="card grid" id="grid"></div>
+ <div class="card"><small>Последние 7 дней</small><div id="week"></div></div>
+ <div class="card"><small>Файл статистики (Markdown, как заметка в Obsidian)</small><div id="fst"></div>
+  <div class="chips"><button class="chip" id="link">📎 Привязать файл</button><button class="chip" id="dl">⬇ Скачать .md</button><label class="chip" style="margin:0">⬆ Загрузить .md<input type="file" id="up" accept=".md,.txt,text/*" hidden></label></div></div>
+ <button class="ghost" id="wipe">Стереть всю статистику</button>
+</section>
+
+<section class="scr" id="set">
+ <div class="card"><small>Шрифт</small><div class="chips" id="fonts"></div><label>Размер текста<input type="range" data-k="fs" min=".85" max="1.3" step=".05"></label></div>
+ <div class="card"><small>Темы</small><div class="chips" id="themes"></div></div>
+ <div class="card"><small>Цвета</small><div class="cols"><label>Акцент<input type="color" data-k="a"></label><label>Текст<input type="color" data-k="t"></label><label>Фон 1<input type="color" data-k="c1"></label><label>Фон 2<input type="color" data-k="c2"></label><label>Карточки<input type="color" data-k="cc"></label></div></div>
+ <div class="card"><small>Фон</small><div class="chips" id="bgs"></div>
+  <label>Угол градиента<input type="range" data-k="ang" min="0" max="360"></label>
+  <label>Прозрачность карточек<input type="range" data-k="co" min="0" max="1" step=".05"></label>
+  <label>Скругление углов<input type="range" data-k="r" min="0" max="36"></label>
+  <label>Затемнение фото<input type="range" data-k="dim" min="0" max=".8" step=".05"></label>
+  <div class="chips"><label class="chip" style="margin:0">🖼 Выбрать фото<input type="file" id="img" accept="image/*" hidden></label></div></div>
+ <button class="ghost" id="rst">Сбросить дизайн</button>
+</section>
+</main>
+<nav><button class="on" data-t="home">💪 Главная</button><button data-t="prof">👤 Профиль</button><button data-t="set">🎨 Дизайн</button></nav>
+<div id="toast"></div>
+
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const FONTS=[['Системный','system-ui,sans-serif'],['Russo One','"Russo One",sans-serif'],['Montserrat','Montserrat,sans-serif'],['Oswald','Oswald,sans-serif'],['Pacifico','Pacifico,cursive'],['Lobster','Lobster,cursive'],['Caveat','Caveat,cursive'],['Playfair','"Playfair Display",serif'],['JetBrains','"JetBrains Mono",monospace'],['Pixel','"Press Start 2P",monospace']];
+const THEMES=[
+['Закат',{a:'#ffd166',t:'#fff7ed',c1:'#2b1055',c2:'#ff5e62',cc:'#ffffff',co:.12}],
+['Неон',{a:'#00f5d4',t:'#f1f5f9',c1:'#0f0c29',c2:'#302b63',cc:'#ffffff',co:.1}],
+['Океан',{a:'#48cae4',t:'#f0f9ff',c1:'#03045e',c2:'#0077b6',cc:'#ffffff',co:.12}],
+['Лес',{a:'#95d5b2',t:'#f0fdf4',c1:'#081c15',c2:'#2d6a4f',cc:'#ffffff',co:.1}],
+['Огонь',{a:'#ffb703',t:'#ffffff',c1:'#370617',c2:'#d00000',cc:'#000000',co:.25}],
+['Сакура',{a:'#e5337a',t:'#3b1226',c1:'#ffe4ec',c2:'#ffc2d4',cc:'#ffffff',co:.65}],
+['Моно',{a:'#ffffff',t:'#f5f5f5',c1:'#0a0a0a',c2:'#2a2a2a',cc:'#ffffff',co:.08}]];
+const BGS=['Градиент','Цвет','Сетка','Фото'],AVS=['💪','🔥','🦾','🐯','🦍','🐺','⚡','🚀','👑','😎'],QUICK=[1,5,10,20,25,50,100];
+const RANKS=[[0,'Новичок'],[100,'Любитель'],[500,'Спортсмен'],[2000,'Атлет'],[5000,'Железный'],[10000,'Легенда']];
+const DEF={name:'Атлет',av:'💪',step:10,log:[],s:{font:1,fs:1,bg:0,ang:160,dim:.35,r:22,...THEMES[0][1]}};
+let S=load(),BGIMG=localStorage.getItem('pu_bg'),fh=null;
+function load(){let o={};try{o=JSON.parse(localStorage.getItem('pu'))||{}}catch(e){}const d=structuredClone(DEF);return{...d,...o,s:{...d.s,...o.s}}}
+const save=()=>{try{localStorage.setItem('pu',JSON.stringify(S))}catch(e){toast('Не удалось сохранить')}};
+const p2=n=>String(n).padStart(2,'0'),dk=d=>{d=new Date(d);return d.getFullYear()+'-'+p2(d.getMonth()+1)+'-'+p2(d.getDate())},hm=d=>p2(d.getHours())+':'+p2(d.getMinutes());
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(t._);t._=setTimeout(()=>t.classList.remove('on'),2800)}
+
+function stats(){const by={};let tot=0,mx=0;S.log.forEach(e=>{by[e.d]=(by[e.d]||0)+e.n;tot+=e.n;mx=Math.max(mx,e.n)});const days=Object.keys(by).length;return{by,tot,days,mx,sets:S.log.length,today:by[dk(new Date())]||0,best:Math.max(0,...Object.values(by)),avg:days?Math.round(tot/days):0}}
+
+/* ---------- оформление ---------- */
+const rgba=(h,o)=>{const n=parseInt(h.slice(1),16);return`rgba(${n>>16},${n>>8&255},${n&255},${o})`};
+const dark=h=>{const n=parseInt(h.slice(1),16);return .299*(n>>16)+.587*(n>>8&255)+.114*(n&255)<150};
+function applyStyle(){const s=S.s,r=document.documentElement.style,b=$('#bg').style;
+ r.setProperty('--a',s.a);r.setProperty('--ab',dark(s.a)?'#fff':'#000');r.setProperty('--t',s.t);r.setProperty('--card',rgba(s.cc,s.co));
+ r.setProperty('--r',s.r+'px');r.setProperty('--fs',s.fs);r.setProperty('--f',FONTS[s.font][1]);
+ const g=`linear-gradient(${s.ang}deg,${s.c1},${s.c2})`,gr='linear-gradient(rgba(128,128,128,.18) 1px,transparent 1px),linear-gradient(90deg,rgba(128,128,128,.18) 1px,transparent 1px)';
+ if(s.bg==1){b.background=s.c1;b.backgroundSize='auto'}
+ else if(s.bg==2){b.background=`${gr},${g}`;b.backgroundSize='28px 28px,28px 28px,100% 100%'}
+ else if(s.bg==3&&BGIMG){b.background=`linear-gradient(rgba(0,0,0,${s.dim}),rgba(0,0,0,${s.dim})),url("${BGIMG}")`;b.backgroundSize='cover'}
+ else{b.background=g;b.backgroundSize='auto'}
+ document.querySelector('meta[name=theme-color]').content=s.c1}
+
+function chips(id,arr,on,act){const el=$(id);el.innerHTML='';arr.forEach((x,i)=>{const b=document.createElement('button');b.className='chip'+(act&&act(i)?' on':'');b.textContent=x.l;if(x.st)b.style.cssText=x.st;b.onclick=()=>on(i);el.append(b)})}
+
+function render(){const st=stats();
+ $('#hAv').textContent=$('#pAv').textContent=S.av;$('#hName').textContent=S.name;
+ $('#today').textContent=st.today;$('#total').textContent=$('#pTot').textContent=st.tot;
+ $('#add').textContent='+'+S.step;$('#step').value=S.step;
+ $('#rank').textContent=RANKS.filter(r=>st.tot>=r[0]).pop()[1];
+ chips('#quick',QUICK.map(n=>({l:'+'+n})),i=>{S.step=QUICK[i];save();render()},i=>QUICK[i]==S.step);
+ const ts=S.log.filter(e=>e.d==dk(new Date()));
+ chips('#sets',ts.length?ts.map(e=>({l:e.h+'  +'+e.n})):[{l:'Пока пусто — жми кнопку'}],()=>{});
+ chips('#avs',AVS.map(l=>({l})),i=>{S.av=AVS[i];save();render()},i=>AVS[i]==S.av);
+ chips('#fonts',FONTS.map((f,i)=>({l:f[0],st:'font-family:'+f[1]})),i=>{S.s.font=i;save();applyStyle();render()},i=>i==S.s.font);
+ chips('#themes',THEMES.map(t=>({l:t[0],st:`background:linear-gradient(135deg,${t[1].c1},${t[1].c2});border-color:${t[1].a};color:#fff`})),i=>{Object.assign(S.s,THEMES[i][1]);save();applyStyle();inputs()});
+ chips('#bgs',BGS.map(l=>({l})),i=>{if(i==3&&!BGIMG){toast('Сначала выберите фото');return}S.s.bg=i;save();applyStyle();render()},i=>i==S.s.bg);
+ $('#grid').innerHTML=[['Сегодня',st.today],['Подходов',st.sets],['Дней',st.days],['Рекорд дня',st.best],['В среднем',st.avg],['Лучший подход',st.mx]].map(x=>`<div><b>${x[1]}</b><small>${x[0]}</small></div>`).join('');
+ let w='';const vals=[...Array(7)].map((_,i)=>st.by[dk(Date.now()-(6-i)*864e5)]||0),mx=Math.max(1,...vals);
+ vals.forEach((v,i)=>w+=`<div class="bar"><span>${v}</span><i style="height:${Math.round(v/mx*70)+3}px"></i><span>${new Date(Date.now()-(6-i)*864e5).toLocaleDateString('ru',{weekday:'short'})}</span></div>`);
+ $('#week').innerHTML=w}
+const inputs=()=>$$('[data-k]').forEach(i=>i.value=S.s[i.dataset.k]);
+
+/* ---------- действия ---------- */
+function add(e){const n=new Date();S.log.push({d:dk(n),h:hm(n),n:S.step});save();render();
+ const t=$('#today');t.classList.remove('b');void t.offsetWidth;t.classList.add('b');
+ const f=document.createElement('div'),r=$('#add').getBoundingClientRect();f.className='fl';f.textContent='+'+S.step;f.style.left=(r.left+r.width/2-20)+'px';f.style.top=(r.top+r.height/3)+'px';document.body.append(f);setTimeout(()=>f.remove(),800);
+ navigator.vibrate&&navigator.vibrate(20);sync()}
+$('#add').onclick=add;
+$('#undo').onclick=()=>{if(S.log.pop()){save();render();sync()}};
+const setStep=v=>{S.step=Math.min(100,Math.max(1,+v));save();render()};
+$('#step').oninput=e=>setStep(e.target.value);$('#m').onclick=()=>setStep(S.step-1);$('#p').onclick=()=>setStep(S.step+1);
+$('#name').value=S.name;$('#name').oninput=e=>{S.name=e.target.value||'Атлет';save();$('#hName').textContent=S.name;sync()};
+document.addEventListener('input',e=>{const k=e.target.dataset.k;if(k){S.s[k]=e.target.type=='range'?+e.target.value:e.target.value;applyStyle();save()}});
+$$('nav button').forEach(b=>b.onclick=()=>{$$('.scr').forEach(s=>s.classList.toggle('on',s.id==b.dataset.t));$$('nav button').forEach(x=>x.classList.toggle('on',x==b));scrollTo(0,0)});
+$('#rst').onclick=()=>{if(confirm('Сбросить дизайн?')){S.s=structuredClone(DEF.s);save();applyStyle();inputs();render()}};
+$('#wipe').onclick=()=>{if(confirm('Стереть ВСЮ статистику?')){S.log=[];save();render();sync()}};
+$('#img').onchange=e=>{const f=e.target.files[0];if(!f)return;const im=new Image();im.onload=()=>{const k=Math.min(1,1000/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=im.width*k;c.height=im.height*k;c.getContext('2d').drawImage(im,0,0,c.width,c.height);try{BGIMG=c.toDataURL('image/jpeg',.7);localStorage.setItem('pu_bg',BGIMG);S.s.bg=3;save();applyStyle();render()}catch(x){toast('Фото слишком большое')}};im.src=URL.createObjectURL(f)};
+
+/* ---------- файл Markdown (формат Obsidian) ---------- */
+function toMD(){const st=stats();let m=`---\nnickname: ${S.name}\ntotal: ${st.tot}\ndays: ${st.days}\nupdated: ${dk(new Date())} ${hm(new Date())}\ntags: [pushups]\n---\n# 💪 Отжимания\n`;
+ Object.keys(st.by).sort().reverse().forEach(d=>{m+=`\n## ${d} — ${st.by[d]}\n`;S.log.filter(e=>e.d==d).forEach(e=>m+=`- ${e.h} | +${e.n}\n`)});return m}
+function fromMD(t){t=t.replace(/\r/g,'');const log=[];let d=null,name=null;const fm=t.match(/^---\n([\s\S]*?)\n---/);if(fm){const m=fm[1].match(/^nickname:\s*(.*)$/m);if(m)name=m[1].trim()}
+ t.split('\n').forEach(l=>{let m=l.match(/^## (\d{4}-\d{2}-\d{2})/);if(m){d=m[1];return}m=l.match(/^- (\d{1,2}:\d{2}) \| \+(\d+)/);if(m&&d)log.push({d,h:m[1].padStart(5,'0'),n:+m[2]})});
+ log.sort((a,b)=>(a.d+a.h).localeCompare(b.d+b.h));return{log,name}}
+const idb=(m,v)=>new Promise(r=>{try{const q=indexedDB.open('pu',1);q.onupgradeneeded=()=>q.result.createObjectStore('k');q.onerror=()=>r();q.onsuccess=()=>{const s=q.result.transaction('k',m=='get'?'readonly':'readwrite').objectStore('k'),x=m=='get'?s.get('fh'):s.put(v,'fh');x.onsuccess=()=>r(x.result);x.onerror=()=>r()}}catch(e){r()}});
+const fst=m=>$('#fst').textContent=m||(fh?`Привязан: ${fh.name} — обновляется при каждом подходе`:'Файл не привязан. Данные хранятся в приложении; можно скачать .md.');
+async function sync(){if(!fh)return;try{const o={mode:'readwrite'};if(await fh.queryPermission(o)!=='granted'&&await fh.requestPermission(o)!=='granted')return fst('Нет доступа к файлу — нажмите «Привязать файл»');const w=await fh.createWritable();await w.write(toMD());await w.close();fst()}catch(e){fst('Не удалось записать файл')}}
+$('#link').onclick=async()=>{if(!window.showSaveFilePicker){toast('Этот браузер не умеет привязывать файл. Используйте «Скачать .md»');return}
+ try{fh=await showSaveFilePicker({suggestedName:'pushups.md',types:[{description:'Markdown',accept:{'text/markdown':['.md']}}]});idb('set',fh);await sync();toast('Файл привязан')}catch(e){}};
+$('#dl').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([toMD()],{type:'text/markdown'}));a.download='pushups.md';a.click();toast('Файл pushups.md скачан')};
+$('#up').onchange=async e=>{const f=e.target.files[0];if(!f)return;const r=fromMD(await f.text());if(!r.log.length){toast('В файле не найдено подходов');return}
+ if(confirm(`Заменить текущую статистику данными из файла (${r.log.length} подходов)?`)){S.log=r.log;if(r.name)S.name=$('#name').value=r.name;save();render();sync();toast('Статистика загружена')}e.target.value=''};
+
+applyStyle();inputs();render();fst();idb('get').then(h=>{if(h){fh=h;fst()}});
+if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js'));
+</script>
+</body>
+</html>
